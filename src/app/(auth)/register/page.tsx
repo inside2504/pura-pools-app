@@ -1,5 +1,7 @@
 'use client'
 
+export const dynamic = 'force-dynamic'
+
 import { useState } from 'react'
 import { createClient } from '@/lib/supabase/client'
 import { useRouter } from 'next/navigation'
@@ -14,7 +16,7 @@ export default function RegisterPage() {
   const [loading, setLoading] = useState(false)
 
   const router = useRouter()
-  const supabase = createClient()
+// supabase se crea dentro del handler, no aquí
 
   async function handleRegister(e: React.FormEvent) {
     e.preventDefault()
