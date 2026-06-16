@@ -58,7 +58,7 @@ export default function RegisterPage() {
         return
       }
 
-      router.push('/dashboard')
+      router.push('/leagues')
       router.refresh()
     } catch (err) {
       console.error('Error inesperado en handleRegister:', err)

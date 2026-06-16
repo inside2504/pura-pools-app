@@ -1,14 +1,12 @@
 import { createClient } from '@/lib/supabase/server'
 import { redirect } from 'next/navigation'
 
-export default async function DashboardPage() {
+export default async function LeaguesPage() {
   const supabase = await createClient()
 
-  // Verifica que hay sesión activa — si no, manda al login
   const { data: { user } } = await supabase.auth.getUser()
   if (!user) redirect('/login')
 
-  // Trae el perfil del usuario desde nuestra tabla users
   const { data: profile } = await supabase
     .from('users')
     .select('display_name, email')
@@ -24,18 +22,8 @@ export default async function DashboardPage() {
         </h1>
         <p className="text-sm text-gray-500 mt-1">{profile?.email}</p>
         <p className="text-xs text-gray-400 mt-4">
-          Sesión activa — el dashboard real viene pronto.
+          Aquí van tus quinielas — próximamente.
         </p>
-
-        {/* Botón de logout temporal */}
-        <form action="/api/auth/logout" method="POST">
-          <button
-            type="submit"
-            className="mt-6 text-xs text-red-500 hover:underline"
-          >
-            Cerrar sesión
-          </button>
-        </form>
       </div>
     </div>
   )
