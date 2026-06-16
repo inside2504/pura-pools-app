@@ -1,7 +1,5 @@
 'use client'
 
-export const dynamic = 'force-dynamic'
-
 import { useState } from 'react'
 import { createClient } from '@/lib/supabase/client'
 import { useRouter } from 'next/navigation'
@@ -16,7 +14,7 @@ export default function RegisterPage() {
   const [loading, setLoading] = useState(false)
 
   const router = useRouter()
-// supabase se crea dentro del handler, no aquí
+  // supabase se crea dentro del handler, no aquí
 
   async function handleRegister(e: React.FormEvent) {
     e.preventDefault()
@@ -35,27 +33,16 @@ export default function RegisterPage() {
     setLoading(true)
 
     try {
-      const { data, error } = await supabase.auth.signUp({
+      const supabase = createClient()  // ← aquí, dentro del handler
+      const { error } = await supabase.auth.signUp({
         email,
         password,
         options: {
-          data: {
-            full_name: displayName,
-          },
-        },
+          data: { full_name: displayName }
+        }
       })
 
-      console.log('SUPABASE SIGNUP DATA:', data)
-      console.log('SUPABASE SIGNUP ERROR:', error)
-
       if (error) {
-        console.error('Error completo de Supabase:', {
-          name: error.name,
-          message: error.message,
-          status: error.status,
-          code: error.code,
-        })
-
         setError(`Supabase error: ${error.message}`)
         return
       }
@@ -63,7 +50,7 @@ export default function RegisterPage() {
       router.push('/leagues')
       router.refresh()
     } catch (err) {
-      console.error('Error inesperado en handleRegister:', err)
+      console.error('Error inesperado:', err)
       setError('Error inesperado en el registro. Revisa la consola.')
     } finally {
       setLoading(false)
