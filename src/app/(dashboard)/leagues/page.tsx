@@ -1,11 +1,17 @@
 import { createClient } from '@/lib/supabase/server'
+import { redirect } from 'next/navigation'
+import Link from 'next/link'
 
 export const dynamic = 'force-dynamic'
 
 export default async function LeaguesPage() {
   const supabase = await createClient()
 
-  const { data: { user } } = await supabase.auth.getUser()
+  const { data: { user }, error: userError } = await supabase.auth.getUser()
+
+  if (userError || !user) {
+    redirect('/login')
+  }
 
   const { data: leagues } = await supabase
     .from('league_members')
@@ -21,7 +27,7 @@ export default async function LeaguesPage() {
         format_type
       )
     `)
-    .eq('user_id', user!.id)
+    .eq('user_id', user.id)
 
   return (
     <div>
@@ -34,9 +40,12 @@ export default async function LeaguesPage() {
               : 'Todavía no tienes quinielas'}
           </p>
         </div>
-        <button className="bg-blue-600 hover:bg-blue-700 text-white text-sm font-medium px-4 py-2 rounded-lg transition-colors">
+        <Link
+          href="/leagues/new"
+          className="bg-blue-600 hover:bg-blue-700 text-white text-sm font-medium px-4 py-2 rounded-lg transition-colors"
+        >
           + Nueva quiniela
-        </button>
+        </Link>
       </div>
 
       {/* Estado vacío */}
@@ -49,9 +58,12 @@ export default async function LeaguesPage() {
           <p className="text-sm text-gray-500 mt-1 max-w-xs mx-auto">
             Crea una nueva quiniela e invita a tus amigos para empezar a competir.
           </p>
-          <button className="mt-4 bg-blue-600 hover:bg-blue-700 text-white text-sm font-medium px-5 py-2.5 rounded-lg transition-colors">
+          <Link
+            href="/leagues/new"
+            className="mt-4 inline-block bg-blue-600 hover:bg-blue-700 text-white text-sm font-medium px-5 py-2.5 rounded-lg transition-colors"
+          >
             Crear mi primera quiniela
-          </button>
+          </Link>
         </div>
       )}
 
