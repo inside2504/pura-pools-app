@@ -73,9 +73,10 @@ export default async function LeaguesPage() {
           {leagues.map((member) => {
             const league = member.leagues as any
             return (
-              <div
+              <Link
                 key={league.id}
-                className="bg-white border border-gray-200 rounded-xl p-4 flex items-center justify-between hover:border-blue-300 transition-colors cursor-pointer"
+                href={`/leagues/${league.id}`}
+                className="bg-white border border-gray-200 rounded-xl p-4 flex items-center justify-between hover:border-blue-300 transition-colors"
               >
                 <div className="flex items-center gap-3">
                   <span className="text-2xl">
@@ -105,7 +106,7 @@ export default async function LeaguesPage() {
                   </span>
                   <span className="text-gray-300">→</span>
                 </div>
-              </div>
+              </Link>
             )
           })}
         </div>
