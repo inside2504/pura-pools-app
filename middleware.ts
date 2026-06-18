@@ -4,7 +4,6 @@ import { NextResponse, type NextRequest } from 'next/server'
 export async function middleware(request: NextRequest) {
   let supabaseResponse = NextResponse.next({ request })
 
-  // Solo crea el cliente si las variables existen
   const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL
   const supabaseKey = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY
 
@@ -31,22 +30,37 @@ export async function middleware(request: NextRequest) {
 
   const { data: { user } } = await supabase.auth.getUser()
 
+  const pathname = request.nextUrl.pathname
   const protectedPaths = ['/leagues']
   const authPaths = ['/login', '/register']
 
   const isProtected = protectedPaths.some(path =>
-    request.nextUrl.pathname.startsWith(path)
+    pathname.startsWith(path)
   )
-  const isAuthPath = authPaths.some(path =>
-    request.nextUrl.pathname === path
-  )
+  const isAuthPath = authPaths.some(path => pathname === path)
+  const isJoinPath = pathname.startsWith('/join')
 
+  // Ruta /join — si no hay sesión manda al login con redirect
+  if (isJoinPath && !user) {
+    const url = request.nextUrl.clone()
+    url.pathname = '/login'
+    url.searchParams.set('redirect', pathname)
+    return NextResponse.redirect(url)
+  }
+
+  // Ruta /join con sesión — dejar pasar
+  if (isJoinPath && user) {
+    return supabaseResponse
+  }
+
+  // Rutas protegidas sin sesión
   if (isProtected && !user) {
     const url = request.nextUrl.clone()
     url.pathname = '/login'
     return NextResponse.redirect(url)
   }
 
+  // Login/register con sesión activa
   if (isAuthPath && user) {
     const url = request.nextUrl.clone()
     url.pathname = '/leagues'

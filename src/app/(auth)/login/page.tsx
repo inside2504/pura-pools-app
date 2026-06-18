@@ -2,6 +2,7 @@
 
 import { useState } from 'react'
 import Link from 'next/link'
+import { useSearchParams } from 'next/navigation'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import { login } from '@/lib/supabase/actions'
@@ -9,6 +10,8 @@ import { login } from '@/lib/supabase/actions'
 export default function LoginPage() {
   const [error, setError] = useState<string | null>(null)
   const [isLoading, setIsLoading] = useState(false)
+  const searchParams = useSearchParams()
+  const redirectTo = searchParams.get('redirect')
 
   async function handleSubmit(e: React.FormEvent<HTMLFormElement>) {
     e.preventDefault()
@@ -27,8 +30,6 @@ export default function LoginPage() {
   return (
     <div className="w-full max-w-sm">
       <div className="bg-white border border-gray-200 rounded-xl p-8 shadow-sm">
-
-        {/* Logo */}
         <div className="flex items-center gap-2 mb-6">
           <span className="text-2xl">🏆</span>
           <span className="text-lg font-medium">Pura Pools</span>
@@ -39,6 +40,11 @@ export default function LoginPage() {
         </p>
 
         <form onSubmit={handleSubmit} className="flex flex-col gap-4">
+          {/* Campo oculto con el redirect */}
+          {redirectTo && (
+            <input type="hidden" name="redirectTo" value={redirectTo} />
+          )}
+
           <Input
             name="email"
             type="email"

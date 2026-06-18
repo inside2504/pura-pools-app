@@ -8,6 +8,7 @@ export async function login(formData: FormData) {
 
   const email = formData.get('email') as string
   const password = formData.get('password') as string
+  const redirectTo = formData.get('redirectTo') as string | null
 
   const { error } = await supabase.auth.signInWithPassword({
     email,
@@ -18,7 +19,7 @@ export async function login(formData: FormData) {
     return { error: 'Correo o contraseña incorrectos' }
   }
 
-  redirect('/leagues')
+  redirect(redirectTo ?? '/leagues')
 }
 
 export async function register(formData: FormData) {
