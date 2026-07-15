@@ -1,20 +1,24 @@
 'use client'
 
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import { WizardData } from '@/types/wizard'
 
 type Props = {
   data: WizardData
+  invitationCode: string | null  // ← prop directa
   onNext: () => void
   onBack: () => void
 }
 
-export function Step5Members({ data, onNext, onBack }: Props) {
+export function Step5Members({ data, invitationCode, onNext, onBack }: Props) {
   const [copied, setCopied] = useState(false)
+  const [inviteLink, setInviteLink] = useState<string | null>(null)
 
-  const inviteLink = data.invitationCode
-    ? `${window.location.origin}/join/${data.invitationCode}`
-    : null
+  useEffect(() => {
+    if (invitationCode) {
+      setInviteLink(`${window.location.origin}/join/${invitationCode}`)
+    }
+  }, [invitationCode])
 
   const whatsappMessage = inviteLink
     ? `¡Te invito a la quiniela *${data.name}*! Únete aquí: ${inviteLink}`
@@ -46,7 +50,6 @@ export function Step5Members({ data, onNext, onBack }: Props) {
 
       {inviteLink ? (
         <div className="flex flex-col gap-4 mb-8">
-          {/* Link */}
           <div className="bg-gray-50 border border-gray-200 rounded-xl p-4">
             <p className="text-xs text-gray-400 mb-2 font-medium uppercase tracking-wide">
               Link de invitación
@@ -68,7 +71,6 @@ export function Step5Members({ data, onNext, onBack }: Props) {
             </button>
           </div>
 
-          {/* WhatsApp */}
           <button
             onClick={handleWhatsApp}
             className="w-full bg-[#25D366] hover:bg-[#20bd5a] text-white font-medium text-sm py-3 rounded-xl transition-colors flex items-center justify-center gap-2"
@@ -85,7 +87,7 @@ export function Step5Members({ data, onNext, onBack }: Props) {
         <div className="bg-gray-50 border border-gray-200 rounded-xl p-6 text-center mb-8">
           <span className="text-3xl">⏳</span>
           <p className="text-sm text-gray-500 mt-2">
-            El link se genera al confirmar la quiniela en el siguiente paso.
+            Generando link de invitación...
           </p>
         </div>
       )}

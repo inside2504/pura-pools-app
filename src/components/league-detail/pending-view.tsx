@@ -89,7 +89,7 @@ export function PendingView({ league, members, isOrganizer, invitation }: Props)
             return
         }
 
-        router.refresh()
+        router.push(`/leagues/${league.id}/draft`)
     }
 
     return (

@@ -95,9 +95,7 @@ export default async function LeagueDetailPage({
     }
 
     // draft — próximamente
-    return (
-        <div className="text-center py-12 text-gray-400">
-            <p>Pantalla de sorteo — próximamente</p>
-        </div>
-    )
+    if (league.status === 'draft') {
+        redirect(`/leagues/${id}/draft`)
+    }
 }

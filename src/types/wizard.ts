@@ -22,15 +22,15 @@ export type WizardData = {
 
     // Paso 5 — se llena después de crear la quiniela
     invitationCode?: string
+    leagueId?: string
 }
 
-export type WizardStep = 1 | 2 | 3 | 4 | 5 | 6
+export type WizardStep = 1 | 2 | 3 | 4 | 5
 
 export const STEP_LABELS: Record<WizardStep, string> = {
     1: 'Tipo de quiniela',
     2: 'Detalles',
     3: 'Reglas',
     4: 'Sorteo',
-    5: 'Invitar amigos',
-    6: 'Confirmar',
+    5: 'Confirmar',
 }
