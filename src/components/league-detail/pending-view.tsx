@@ -4,6 +4,7 @@ import { useState, useEffect } from 'react'
 import { useRouter } from 'next/navigation'
 import { Avatar } from '@/components/ui/avatar'
 import { createClient } from '@/lib/supabase/client'
+import Link from 'next/link'
 
 type Props = {
     league: {
@@ -95,6 +96,15 @@ export function PendingView({ league, members, isOrganizer, invitation }: Props)
     return (
         <div className="max-w-2xl mx-auto">
 
+            <div className="flex items-center gap-2 mb-4">
+                <Link
+                    href="/leagues"
+                    className="text-xs text-gray-400 hover:text-gray-600 transition-colors"
+                >
+                    ← Mis quinielas
+                </Link>
+            </div>
+
             {/* Header */}
             <div className="flex items-start gap-3 mb-6">
                 <span className="text-3xl">{SPORT_EMOJI[league.sport] ?? '🏆'}</span>
@@ -108,6 +118,7 @@ export function PendingView({ league, members, isOrganizer, invitation }: Props)
                     Por iniciar
                 </span>
             </div>
+
 
             {/* Participantes */}
             <div className="bg-white border border-gray-200 rounded-xl p-4 mb-4">

@@ -177,13 +177,16 @@ export function CreateLeagueWizard() {
 
       await supabase.from('league_drafts').delete().eq('user_id', user.id)
 
+      // Guardar en sessionStorage por si el usuario recarga
       sessionStorage.setItem('lastCreatedLeagueId', league.id)
       sessionStorage.setItem('lastCreatedInvitationCode', invitationCode)
 
-      setIsCompleted(true)
+      // Actualizar estado — esto dispara el re-render a Step5Members
       setCompletedLeagueId(league.id)
       setCompletedInvitationCode(invitationCode)
-      // No cambiamos step — ya estamos en el 5, solo cambia isCompleted
+      setIsCompleted(true)
+      // No tocamos step — sigue en 5, pero ahora isCompleted=true muestra Step5Members
+
     } catch (error) {
       console.error('Error creando quiniela:', error)
     } finally {

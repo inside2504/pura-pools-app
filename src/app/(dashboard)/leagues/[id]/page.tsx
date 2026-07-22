@@ -1,8 +1,8 @@
 import { createClient } from '@/lib/supabase/server'
 import { redirect, notFound } from 'next/navigation'
 import { PendingView } from '@/components/league-detail/pending-view'
-import { ActiveView } from '@/components/league-detail/active-view'
 import { FinishedView } from '@/components/league-detail/finished-view'
+import { ActiveView } from '@/components/active-view/active-view'
 
 export const dynamic = 'force-dynamic'
 
@@ -74,12 +74,16 @@ export default async function LeagueDetailPage({
     }
 
     if (league.status === 'active' || league.status === 'playoffs') {
+        // Cargar standings via RPC
+        const { data: standings } = await supabase
+            .rpc('get_league_standings', { p_league_id: id })
+
         return (
             <ActiveView
                 league={league as any}
-                members={formattedMembers}
-                currentMember={currentMember}
+                initialStandings={standings ?? []}
                 isOrganizer={isOrganizer}
+                currentUserId={user.id}
             />
         )
     }
