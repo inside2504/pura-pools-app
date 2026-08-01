@@ -34,14 +34,38 @@ type League = {
   status: string
 }
 
+type ExistingRecord = {
+  teamId: string
+  wins: number
+  losses: number
+  ties: number
+  isEliminated: boolean
+  clinchedPlayoff: boolean
+}
+
 type Props = {
   league: League
   initialStandings: StandingRow[]
   isOrganizer: boolean
   currentUserId: string
+  allNflTeams: Array<{  // ← nuevo
+    id: string
+    name: string
+    abbreviation: string
+    conference: string
+    division: string
+  }>
+  existingRecords: ExistingRecord[]
 }
 
-export function ActiveView({ league, initialStandings, isOrganizer, currentUserId }: Props) {
+export function ActiveView({
+  league,
+  initialStandings,
+  isOrganizer,
+  currentUserId,
+  allNflTeams,
+  existingRecords,
+}: Props) {
   const [standings, setStandings] = useState<StandingRow[]>(initialStandings)
   const [activeTab, setActiveTab] = useState<'standings' | 'teams' | 'update'>('standings')
 
@@ -213,11 +237,23 @@ export function ActiveView({ league, initialStandings, isOrganizer, currentUserI
 
       {/* Tab: Actualizar — solo organizador */}
       {activeTab === 'update' && isOrganizer && (
-        <UpdateRecordsPanel
-          leagueId={league.id}
-          teams={uniqueTeams}
-          onUpdated={refreshStandings}
-        />
+        <>
+          {console.log('existingRecords:', existingRecords)}
+          <UpdateRecordsPanel
+            leagueId={league.id}
+            allNflTeams={allNflTeams}
+            existingRecords={existingRecords}
+            onUpdated={refreshStandings}
+            onPlayoffsStarted={async () => {
+              const supabase = createClient()
+              await supabase
+                .from('leagues')
+                .update({ status: 'playoffs' })
+                .eq('id', league.id)
+              window.location.reload()
+            }}
+          />
+        </>
       )}
     </div>
   )
